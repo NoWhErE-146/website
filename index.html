@@ -203,12 +203,10 @@
                             <hr size="1" color="#334155">
                             <br>
 
-                            <!-- NEW SECTION: Dynamic Live Feed Display Container -->
+                            <!-- Dynamic Live Feed Display Container -->
                             <h3><font face="Trebuchet MS, Arial, sans-serif" color="#34D399" size="5">Live Viewer Feedback Feed</font></h3>
                             <br>
                             <div id="loadingStatus"><font face="Arial" size="3" color="#94A3B8">Connecting to database pipeline...</font></div>
-                            
-                            <!-- This container handles dynamic table injection safely -->
                             <div id="reviewsContainer"></div>
 
                         </td>
@@ -231,7 +229,7 @@
         </tr>
     </table>
 
-    <!-- Data Engine Pipeline connecting form to your active Google Sheet -->
+    <!-- Data Engine Pipeline Script -->
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzJPgkc9gTG_H7IK4kKwuVNWvt48WtFP16Rc-rpIcCM1Vr0nlAQBMU404OSEq64F4DOuQ/exec'; 
         const form = document.getElementById('reviewForm');
@@ -257,11 +255,11 @@
             .then(response => {
                 alert('Thank you! Your gadget review has been saved.');
                 form.reset(); 
-                loadLiveReviews(); // Refresh feed automatically after a post submission
+                loadLiveReviews(); 
             })
             .catch(error => {
                 console.error('Submission Failed:', error);
-                alert('Connection timeout error. Review was unable to reach the sheet.');
+                alert('Connection timeout error.');
             });
         });
 
@@ -274,29 +272,37 @@
                 const response = await fetch(scriptURL);
                 const data = await response.json();
                 
-                statusText.style.display = 'none'; // Hide loading tracker
-                container.innerHTML = ''; // Clear container
+                statusText.style.display = 'none'; 
+                container.innerHTML = ''; 
 
                 if (data.length === 0) {
-                    container.innerHTML = '<font face="Arial" size="3" color="#94A3B8"><i>No reviews submitted yet. Be the first!</i></font>';
+                    container.innerHTML = '<font face="Arial" size="3" color="#94A3B8"><i>No reviews submitted yet.</i></font>';
                     return;
                 }
 
-                // Construct a dynamic structural layout grid to display logs cleanly
                 let htmlBlock = `<table border="0" cellpadding="15" cellspacing="1" width="100%" bgcolor="#334155">
                                     <tr bgcolor="#0F172A">
-                                        <th align="left" width="30%"><font face="Arial" color="#38BDF8">Viewer Name</font></th>
+                                        <th align="left" width="25%"><font face="Arial" color="#38BDF8">Viewer Name</font></th>
                                         <th align="left" width="20%"><font face="Arial" color="#38BDF8">Rating</font></th>
-                                        <th align="left" width="50%"><font face="Arial" color="#38BDF8">Review Comment</font></th>
+                                        <th align="left" width="45%"><font face="Arial" color="#38BDF8">Review Comment</font></th>
+                                        <th align="center" width="10%"><font face="Arial" color="#38BDF8">Action</font></th>
                                     </tr>`;
 
-                // Loop rows backwards to show newest submissions on top
+                // Loop backwards so newest submissions stay on top
                 for (let i = data.length - 1; i >= 0; i--) {
                     let rowColor = (i % 2 === 0) ? "#1E293B" : "#162235";
+                    
+                    // Escape raw strings to avoid HTML breakage inside parameters
+                    let cleanName = encodeURIComponent(data[i].viewerName || '');
+                    let cleanComment = encodeURIComponent(data[i].reviewComment || '');
+
                     htmlBlock += `<tr bgcolor="${rowColor}">
                                     <td><font face="Arial" color="#F8FAFC"><b>${data[i].viewerName || 'Anonymous'}</b></font></td>
                                     <td><font face="Arial" color="#34D399"><b>${data[i].rating || 'N/A'}</b></font></td>
                                     <td><font face="Arial" color="#E2E8F0">${data[i].reviewComment || ''}</font></td>
+                                    <td align="center">
+                                        <button onclick="deleteReview('${cleanName}', '${cleanComment}')" style="background-color: #EF4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-family: Arial; font-weight: bold;">Delete</button>
+                                    </td>
                                   </tr>`;
                 }
 
@@ -309,7 +315,42 @@
             }
         }
 
-        // Trigger loading routine automatically on page mount
+        // --- DELETE WORKFLOW ---
+        function deleteReview(name, comment) {
+            const password = prompt("Enter Admin Password to delete this review:");
+            if (password === null || password === "") return; // Cancelled
+
+            const deletePayload = {
+                action: "DELETE",
+                password: password,
+                viewerName: decodeURIComponent(name),
+                reviewComment: decodeURIComponent(comment)
+            };
+
+            // Display loading indicator
+            document.getElementById('reviewsContainer').innerHTML = '<font face="Arial" size="3" color="#94A3B8">Processing deletion request...</font>';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(deletePayload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === "success") {
+                    alert('Review deleted successfully!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+                loadLiveReviews(); // Refresh the list
+            })
+            .catch(error => {
+                console.error('Deletion error:', error);
+                alert('Connection error occurred.');
+                loadLiveReviews();
+            });
+        }
+
+        // Trigger loading routine on load
         loadLiveReviews();
     </script>
 
