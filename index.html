@@ -51,23 +51,7 @@
                             
                             <p>
                                 <font face="Georgia, Times New Roman, serif" size="4" color="#E2E8F0">
-                                    The smartphone market has a new heavyweight contender. In this review, we dive deep into the <i>Nexus Quantum X1</i>, evaluating its design, hardware efficiency, and market value. Is it truly worth your hard-earned money? Let's find out.
-                                </font>
-                            </p>
-
-                            <!-- NEW SECTION: Detailed Design & Build Analysis -->
-                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">Design & Build Quality</font></h3>
-                            <p>
-                                <font face="Georgia, Times New Roman, serif" size="3.5" color="#CBD5E1">
-                                    At first touch, the Nexus Quantum X1 feels exceptionally premium. It marks a shift away from standard plastics, incorporating an <b>anodized brushed aerospace aluminum external frame casing</b> paired with textured ceramic glass on the rear. The ergonomic weight distribution keeps the 5000 mAh chassis comfortable during extended single-handed use, and the seamless integration of its camera module prevents the top-heavy wobbling common in modern flagships.
-                                </font>
-                            </p>
-
-                            <!-- NEW SECTION: Detailed Display & Performance Analysis -->
-                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">Display, Thermal Management & Field Performance</font></h3>
-                            <p>
-                                <font face="Georgia, Times New Roman, serif" size="3.5" color="#CBD5E1">
-                                    The 6.7-inch OLED panel behaves excellently under extreme conditions. Our diagnostic tests verified that its 120Hz dynamic refresh layer drops accurately to save standby battery overhead while climbing instantly during micro-interaction rendering. Thanks to an internal <b>liquid vapor-chamber thermal distribution infrastructure</b>, the smartphone sustains peak benchmark performance with zero thermal throttling, handling intensive mobile compilation work arrays and resource-heavy multi-task pipelines effortlessly.
+                                    The smartphone market has a new heavyweight contender. In this comprehensive diagnostic report, we dive deep into the <i>Nexus Quantum X1</i>, evaluating its industrial design, architecture efficiency, daily productivity endurance, and long-term market value. Is it truly worth your hard-earned money? Let's find out.
                                 </font>
                             </p>
 
@@ -122,16 +106,31 @@
                                 </tr>
                             </table>
 
-                            <!-- NEW SECTION: Detailed Verdict and Assessment -->
-                            <br>
-                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">The Definitive Verdict</font></h3>
+                            <br><br>
+                            
+                            <!-- DETAILED TECHNICAL REVIEW ANALYSIS SECTIONS -->
+                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">Design & Build Quality</font></h3>
                             <p>
-                                <font face="Georgia, Times New Roman, serif" size="3.5" color="#CBD5E1">
-                                    Ultimately, the Nexus Quantum X1 stands as a masterclass in internal device optimization. While the retail investment matrix leans toward the high end of premium tiers, users receive uncompromised processing pipelines, excellent endurance longevity, and brilliant panel engineering. If you seek an elite, high-bandwidth communication terminal capable of lasting several hardware cycles into the future, this investment is completely justified.
+                                <font face="Arial, Helvetica, sans-serif" size="3" color="#CBD5E1">
+                                    The Nexus Quantum X1 sets a benchmark in premium ergonomics. Constructed with an aerospace-grade matte aluminum chassis and reinforced Gorilla Glass Armor protection, it effectively prevents visible fingerprint smudges while retaining structural rigidity. The subtle curved back slips easily into the hand, providing a steady grip despite its large frame.
                                 </font>
                             </p>
 
-                            <br><br>
+                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">Display & Hardware Benchmarks</font></h3>
+                            <p>
+                                <font face="Arial, Helvetica, sans-serif" size="3" color="#CBD5E1">
+                                    The 6.7-inch OLED panel features an adaptive 120Hz refresh rate that scales down seamlessly to 1Hz during static tasks to preserve battery life. Peak brightness levels reach an outstanding 2500 nits, making outdoors visibility excellent under direct ambient light. Under sustained processing loops, the 3.4 GHz chipset holds steady benchmarks with no noticeable frame-rate drops.
+                                </font>
+                            </p>
+
+                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#38BDF8" size="4">Optics & Battery Endurance</font></h3>
+                            <p>
+                                <font face="Arial, Helvetica, sans-serif" size="3" color="#CBD5E1">
+                                    Equipped with a triple-lens rear arrangement, the device produces extremely accurate color correction layouts and low-light exposure tracking. Powering this setup is a heavy-duty 5000 mAh cells module. In standard looping tests, it logged over 18 hours of continuous runtime, while the 80W rapid charging capability restores the cell pool from 0% to 100% in exactly 38 minutes.
+                                </font>
+                            </p>
+
+                            <br>
                             <hr size="1" color="#334155">
                             <br>
 
@@ -179,10 +178,11 @@
                             <table bgcolor="#0F172A" border="0" cellpadding="25" cellspacing="0" width="100%">
                                 <tr>
                                     <td>
-                                        <form action="#" method="post">
+                                        <!-- Connected to Javascript controller logic -->
+                                        <form id="reviewForm">
                                             <font face="Arial, sans-serif" size="3" color="#E2E8F0">
                                                 <b>Your Name:</b><br><br>
-                                                <input type="text" name="viewerName" size="50" required placeholder="Enter your full name"><br><br><br>
+                                                <input type="text" id="viewerName" name="viewerName" size="50" required placeholder="Enter your full name"><br><br><br>
 
                                                 <b>Rate this Smartphone:</b><br><br>
                                                 <input type="radio" name="rating" value="5" checked> <font color="#34D399"><b>5 Stars</b></font> - Excellent &nbsp;&nbsp;&nbsp;
@@ -191,7 +191,7 @@
                                                 <input type="radio" name="rating" value="2"> 2 Stars - Poor<br><br><br>
 
                                                 <b>Your Review Comment:</b><br><br>
-                                                <textarea name="reviewComment" rows="6" cols="60" required placeholder="Write your gadget review feedback here..."></textarea><br><br><br>
+                                                <textarea id="reviewComment" name="reviewComment" rows="6" cols="60" required placeholder="Write your gadget review feedback here..."></textarea><br><br><br>
 
                                                 <input type="submit" value="  Submit Review  ">
                                             </font>
@@ -219,6 +219,41 @@
             </td>
         </tr>
     </table>
+
+    <!-- Data Engine Pipeline connecting form to your active Google Sheet -->
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzJPgkc9gTG_H7IK4kKwuVNWvt48WtFP16Rc-rpIcCM1Vr0nlAQBMU404OSEq64F4DOuQ/exec'; 
+        const form = document.getElementById('reviewForm');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); 
+
+            const selectedRating = document.querySelector('input[name="rating"]:checked').value;
+
+            const submissionData = {
+                viewerName: document.getElementById('viewerName').value,
+                rating: selectedRating + " Stars",
+                reviewComment: document.getElementById('reviewComment').value
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(submissionData)
+            })
+            .then(response => {
+                alert('Thank you! Your gadget review has been saved.');
+                form.reset(); 
+            })
+            .catch(error => {
+                console.error('Submission Failed:', error);
+                alert('Connection timeout error. Review was unable to reach the sheet.');
+            });
+        });
+    </script>
 
 </body>
 </html>
