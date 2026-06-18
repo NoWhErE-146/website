@@ -178,7 +178,6 @@
                             <table bgcolor="#0F172A" border="0" cellpadding="25" cellspacing="0" width="100%">
                                 <tr>
                                     <td>
-                                        <!-- Connected to Javascript controller logic -->
                                         <form id="reviewForm">
                                             <font face="Arial, sans-serif" size="3" color="#E2E8F0">
                                                 <b>Your Name:</b><br><br>
@@ -199,6 +198,18 @@
                                     </td>
                                 </tr>
                             </table>
+
+                            <br><br>
+                            <hr size="1" color="#334155">
+                            <br>
+
+                            <!-- NEW SECTION: Dynamic Live Feed Display Container -->
+                            <h3><font face="Trebuchet MS, Arial, sans-serif" color="#34D399" size="5">Live Viewer Feedback Feed</font></h3>
+                            <br>
+                            <div id="loadingStatus"><font face="Arial" size="3" color="#94A3B8">Connecting to database pipeline...</font></div>
+                            
+                            <!-- This container handles dynamic table injection safely -->
+                            <div id="reviewsContainer"></div>
 
                         </td>
                     </tr>
@@ -225,6 +236,7 @@
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzJPgkc9gTG_H7IK4kKwuVNWvt48WtFP16Rc-rpIcCM1Vr0nlAQBMU404OSEq64F4DOuQ/exec'; 
         const form = document.getElementById('reviewForm');
 
+        // --- SUBMIT WORKFLOW (POST) ---
         form.addEventListener('submit', e => {
             e.preventDefault(); 
 
@@ -239,20 +251,66 @@
             fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(submissionData)
             })
             .then(response => {
                 alert('Thank you! Your gadget review has been saved.');
                 form.reset(); 
+                loadLiveReviews(); // Refresh feed automatically after a post submission
             })
             .catch(error => {
                 console.error('Submission Failed:', error);
                 alert('Connection timeout error. Review was unable to reach the sheet.');
             });
         });
+
+        // --- FETCH WORKFLOW (GET) ---
+        async function loadLiveReviews() {
+            const container = document.getElementById('reviewsContainer');
+            const statusText = document.getElementById('loadingStatus');
+            
+            try {
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+                
+                statusText.style.display = 'none'; // Hide loading tracker
+                container.innerHTML = ''; // Clear container
+
+                if (data.length === 0) {
+                    container.innerHTML = '<font face="Arial" size="3" color="#94A3B8"><i>No reviews submitted yet. Be the first!</i></font>';
+                    return;
+                }
+
+                // Construct a dynamic structural layout grid to display logs cleanly
+                let htmlBlock = `<table border="0" cellpadding="15" cellspacing="1" width="100%" bgcolor="#334155">
+                                    <tr bgcolor="#0F172A">
+                                        <th align="left" width="30%"><font face="Arial" color="#38BDF8">Viewer Name</font></th>
+                                        <th align="left" width="20%"><font face="Arial" color="#38BDF8">Rating</font></th>
+                                        <th align="left" width="50%"><font face="Arial" color="#38BDF8">Review Comment</font></th>
+                                    </tr>`;
+
+                // Loop rows backwards to show newest submissions on top
+                for (let i = data.length - 1; i >= 0; i--) {
+                    let rowColor = (i % 2 === 0) ? "#1E293B" : "#162235";
+                    htmlBlock += `<tr bgcolor="${rowColor}">
+                                    <td><font face="Arial" color="#F8FAFC"><b>${data[i].viewerName || 'Anonymous'}</b></font></td>
+                                    <td><font face="Arial" color="#34D399"><b>${data[i].rating || 'N/A'}</b></font></td>
+                                    <td><font face="Arial" color="#E2E8F0">${data[i].reviewComment || ''}</font></td>
+                                  </tr>`;
+                }
+
+                htmlBlock += `</table>`;
+                container.innerHTML = htmlBlock;
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                statusText.innerHTML = '<font face="Arial" color="#EF4444">Failed to synchronize review logs data feed.</font>';
+            }
+        }
+
+        // Trigger loading routine automatically on page mount
+        loadLiveReviews();
     </script>
 
 </body>
